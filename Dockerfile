@@ -1,24 +1,25 @@
-# Root Dockerfile for Render
 FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy workspace configs
+# Copy root-level files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# Copy required folders
+# Copy monorepo packages
 COPY packages ./packages
-COPY apps/api ./apps/api
 
-# Install dependencies only for api
+# Copy apps (api, web, etc.)
+COPY apps ./apps
+
+# Install dependencies for API
 RUN corepack enable && pnpm -C apps/api install --frozen-lockfile
 
-# Build TypeScript backend
+# Build API
 RUN pnpm -C apps/api build
 
-# Expose port
+# Environment + port
 ENV PORT=10000
 EXPOSE 10000
 
-# Start backend
+# Start API
 CMD ["pnpm", "-C", "apps/api", "start"]
