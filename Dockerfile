@@ -1,25 +1,14 @@
 FROM node:20-alpine
-
 WORKDIR /app
 
-# Copy root-level files
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-
-# Copy monorepo packages
+COPY pnpm-lock.yaml package.json pnpm-workspace.yaml ./
 COPY packages ./packages
+COPY ./apps/api ./apps/api   # <-- path sahi se likho
 
-# Copy apps (api, web, etc.)
-COPY apps ./apps
-
-# Install dependencies for API
-RUN corepack enable && pnpm -C apps/api install --frozen-lockfile
-
-# Build API
+RUN corepack enable && pnpm -C apps/api install --frozen-lockfile || true
 RUN pnpm -C apps/api build
 
-# Environment + port
-ENV PORT=10000
-EXPOSE 10000
+ENV PORT=4000
+EXPOSE 4000
 
-# Start API
-CMD ["pnpm", "-C", "apps/api", "start"]
+CMD ["pnpm","-C","apps/api","start"]
