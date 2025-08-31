@@ -11,10 +11,10 @@ COPY packages ./packages
 COPY apps/api ./apps/api
 
 # Install dependencies (workspace aware)
-RUN pnpm -C apps/api install--no --frozen-lockfile
+RUN pnpm -C apps/api install--no-frozen-lockfile
 
 # Build TypeScript
-RUN pnpm -C apps/api build
+RUN pnpm -C apps/api install
 
 # Step 2: Runtime Stage
 FROM node:20-alpine AS runtime
