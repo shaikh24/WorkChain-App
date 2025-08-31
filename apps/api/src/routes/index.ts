@@ -1,0 +1,28 @@
+import { Router } from "express";
+import auth from "../modules/users/auth.routes.js";
+import profile from "../modules/profiles/profile.routes.js";
+import categories from "../modules/catalog/category.routes.js";
+import gigs from "../modules/catalog/gig.routes.js";
+import orders from "../modules/orders/order.routes.js";
+import messages from "../modules/messaging/message.routes.js";
+import jobs from "../modules/jobs/job.routes.js";
+import reviews from "../modules/reviews/review.routes.js";
+import disputes from "../modules/disputes/dispute.routes.js";
+import wallets from "../modules/wallets/wallet.routes.js";
+import admin from "../modules/admin/admin.routes.js";
+import { mountSwagger } from "../config/swagger.js";
+
+const router = Router();
+router.use("/auth", auth);
+router.use("/profiles", profile);
+router.use("/categories", categories);
+router.use("/gigs", gigs);
+router.use("/orders", orders);
+router.use("/messages", messages);
+router.use("/jobs", jobs);
+router.use("/reviews", reviews);
+router.use("/disputes", disputes);
+router.use("/wallets", wallets);
+router.use("/admin", admin);
+mountSwagger(router);
+export default router;

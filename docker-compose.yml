@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    ports: ["27017:27017"]
+    volumes: [mongo_data:/data/db]
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    ports: ["6379:6379"]
+  api:
+    build: ./apps/api
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - REDIS_URL=${REDIS_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - PORT=${PORT}
+      - CORS_ORIGIN=${CORS_ORIGIN}
+      - PI_ENV=${PI_ENV}
+      - PI_API_KEY=${PI_API_KEY}
+      - PI_API_SECRET=${PI_API_SECRET}
+    ports: ["4000:4000"]
+    depends_on: [mongo, redis]
+  web:
+    build: ./apps/web
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+    ports: ["5173:5173"]
+    depends_on: [api]
+volumes:
+  mongo_data:
