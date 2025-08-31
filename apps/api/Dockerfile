@@ -5,11 +5,14 @@ WORKDIR /app
 # Install pnpm globally
 RUN npm install -g pnpm
 
-# Copy only backend files
+# Copy only required files
+COPY pnpm-lock.yaml package.json pnpm-workspace.yaml ./
+COPY packages ./packages
 COPY apps/api ./apps/api
+
 WORKDIR /app/apps/api
 
-# Install dependencies (dev bhi for build)
+# Install dependencies
 RUN pnpm install
 
 # Build TypeScript
@@ -19,14 +22,14 @@ RUN pnpm run build
 FROM node:20-alpine AS runtime
 WORKDIR /app
 
-# Copy built files and required metadata
+# Copy built files and dependencies
 COPY --from=builder /app/apps/api/dist ./dist
 COPY --from=builder /app/apps/api/node_modules ./node_modules
 COPY --from=builder /app/apps/api/package.json .
 
-# Expose port (Render expects 10000 default)
+# Set environment
 ENV PORT=10000
 EXPOSE 10000
 
-# Start server
+# Start the server
 CMD ["node", "dist/server.js"]
